@@ -22,9 +22,24 @@ const Header = (props) => {
     username: "",
     password: "",
   });
-
   const [UsernameRequired, setUsernameRequired] = useState(false);
   const [LoginPasswordRequired, setLoginPasswordRequired] = useState(false);
+
+  const [RegisterFormValues, setRegisterFormValues] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    registerPassword: "",
+    contact: "",
+  });
+
+  const [FirstNameRequired, setFirstNameRequired] = useState(false);
+  const [LastNameRequired, setLastNameRequired] = useState(false);
+  const [EmailRequired, setEmailRequired] = useState(false);
+  const [ContactRequired, setContactRequired] = useState(false);
+  const [RegisterPasswordRequired, setRegisterPasswordRequired] =
+    useState(false);
+  const [IsRegistrationSuccess, setIsRegistrationSuccess] = useState(false);
 
   const customModalStyles = {
     content: {
@@ -44,7 +59,6 @@ const Header = (props) => {
   const onLoginFormSubmit = (e) => {
     e.preventDefault();
     setUsernameRequired(LoginFormValues.username === "" ? true : false);
-
     setLoginPasswordRequired(LoginFormValues.password === "" ? true : false);
 
     fetch(props.baseUrl + "auth/login", {
@@ -60,15 +74,17 @@ const Header = (props) => {
       },
     })
       .then((response) => {
-        response.json();
         sessionStorage.setItem(
           "access-token",
           response.headers.get("access-token")
         );
+        return response.json();
       })
       .then((response) => {
-        setIsLoggedIn(true);
-        handleCloseLoginRegisterModal();
+        if (response.status === "ACTIVE") {
+          setIsLoggedIn(true);
+          handleCloseLoginRegisterModal();
+        }
       })
       .catch(function (error) {
         console.error(error);
@@ -79,6 +95,44 @@ const Header = (props) => {
     e.preventDefault();
     sessionStorage.removeItem("access-token");
     setIsLoggedIn(false);
+  };
+
+  const onRegisterFormSubmit = (e) => {
+    e.preventDefault();
+
+    setFirstNameRequired(RegisterFormValues.firstname === "" ? true : false);
+    setLastNameRequired(RegisterFormValues.lastname === "" ? true : false);
+    setEmailRequired(RegisterFormValues.email === "" ? true : false);
+    setRegisterPasswordRequired(
+      RegisterFormValues.registerPassword === "" ? true : false
+    );
+    setContactRequired(RegisterFormValues.contact === "" ? true : false);
+
+    let signupData = JSON.stringify({
+      first_name: RegisterFormValues.firstname,
+      last_name: RegisterFormValues.lastname,
+      email_address: RegisterFormValues.email,
+      mobile_number: RegisterFormValues.contact,
+      password: RegisterFormValues.registerPassword,
+    });
+    console.log(
+      "🚀 ~ file: Header.js ~ line 116 ~ onRegisterFormSubmit ~ signupData",
+      signupData
+    );
+
+    fetch(props.baseUrl + "signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-cache",
+      },
+      body: signupData,
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        console.log(response);
+        setIsRegistrationSuccess(response.status === "ACTIVE" ? true : false);
+      });
   };
 
   return (
@@ -208,6 +262,130 @@ const Header = (props) => {
               onClick={onLoginFormSubmit}
             >
               LOGIN
+            </Button>
+          </div>
+        )}
+
+        {ModalTabValue === 1 && (
+          <div style={{ padding: 0, textAlign: "center" }}>
+            <FormControl required>
+              <InputLabel htmlFor="firstname">First Name</InputLabel>
+              <Input
+                id="firstname"
+                type="text"
+                value={RegisterFormValues.firstname}
+                onChange={(e) => {
+                  setRegisterFormValues({
+                    ...RegisterFormValues,
+                    firstname: e.target.value,
+                  });
+                }}
+              />
+              {FirstNameRequired && (
+                <FormHelperText>
+                  <span className="red">required</span>
+                </FormHelperText>
+              )}
+            </FormControl>
+            <br />
+            <br />
+            <FormControl required>
+              <InputLabel htmlFor="lastname">Last Name</InputLabel>
+              <Input
+                id="lastname"
+                type="text"
+                value={RegisterFormValues.lastname}
+                onChange={(e) => {
+                  setRegisterFormValues({
+                    ...RegisterFormValues,
+                    lastname: e.target.value,
+                  });
+                }}
+              />
+              {LastNameRequired && (
+                <FormHelperText>
+                  <span className="red">required</span>
+                </FormHelperText>
+              )}
+            </FormControl>
+            <br />
+            <br />
+            <FormControl required>
+              <InputLabel htmlFor="email">Email</InputLabel>
+              <Input
+                id="email"
+                type="text"
+                value={RegisterFormValues.email}
+                onChange={(e) => {
+                  setRegisterFormValues({
+                    ...RegisterFormValues,
+                    email: e.target.value,
+                  });
+                }}
+              />
+              {EmailRequired && (
+                <FormHelperText>
+                  <span className="red">required</span>
+                </FormHelperText>
+              )}
+            </FormControl>
+            <br />
+            <br />
+            <FormControl required>
+              <InputLabel htmlFor="registerPassword">Password</InputLabel>
+              <Input
+                id="registerPassword"
+                type="password"
+                value={RegisterFormValues.registerPassword}
+                onChange={(e) => {
+                  setRegisterFormValues({
+                    ...RegisterFormValues,
+                    registerPassword: e.target.value,
+                  });
+                }}
+              />
+              {RegisterPasswordRequired && (
+                <FormHelperText>
+                  <span className="red">required</span>
+                </FormHelperText>
+              )}
+            </FormControl>
+            <br />
+            <br />
+            <FormControl required>
+              <InputLabel htmlFor="contact">Contact No.</InputLabel>
+              <Input
+                id="contact"
+                type="text"
+                value={RegisterFormValues.contact}
+                onChange={(e) => {
+                  setRegisterFormValues({
+                    ...RegisterFormValues,
+                    contact: e.target.value,
+                  });
+                }}
+              />
+              {ContactRequired && (
+                <FormHelperText>
+                  <span className="red">required</span>
+                </FormHelperText>
+              )}
+            </FormControl>
+            <br />
+            <br />
+            {IsRegistrationSuccess === true && (
+              <FormControl>
+                <span>Registration Successful. Please Login!</span>
+              </FormControl>
+            )}
+            <br />
+            <br />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={onRegisterFormSubmit}
+            >
+              REGISTER
             </Button>
           </div>
         )}
