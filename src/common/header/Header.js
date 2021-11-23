@@ -115,10 +115,6 @@ const Header = (props) => {
       mobile_number: RegisterFormValues.contact,
       password: RegisterFormValues.registerPassword,
     });
-    console.log(
-      "🚀 ~ file: Header.js ~ line 116 ~ onRegisterFormSubmit ~ signupData",
-      signupData
-    );
 
     fetch(props.baseUrl + "signup", {
       method: "POST",
@@ -130,7 +126,6 @@ const Header = (props) => {
     })
       .then((response) => response.json())
       .then((response) => {
-        console.log(response);
         setIsRegistrationSuccess(response.status === "ACTIVE" ? true : false);
       });
   };

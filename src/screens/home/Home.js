@@ -119,11 +119,6 @@ const Home = (props) => {
       initialQueryString += "&end_date=" + EndReleasedDate;
     }
 
-    console.log(
-      "🚀 ~ file: Home.js ~ line 95 ~ applyFilterHandler ~ initialQueryString",
-      initialQueryString
-    );
-
     fetch(props.baseUrl + "movies" + encodeURI(initialQueryString), {
       method: "GET",
       headers: {
@@ -133,7 +128,6 @@ const Home = (props) => {
     })
       .then((response) => response.json())
       .then((response) => {
-        console.log(response);
         setReleasedMovies(response.movies);
       });
   };

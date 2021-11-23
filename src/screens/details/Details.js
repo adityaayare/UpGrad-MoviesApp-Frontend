@@ -38,7 +38,7 @@ const Details = (props) => {
     height: "300",
     width: "700",
     playerVars: {
-      autoplay: 0,
+      autoplay: 1,
     },
   };
 
