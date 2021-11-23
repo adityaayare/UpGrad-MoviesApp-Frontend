@@ -3,8 +3,8 @@ import Header from "../../common/header/Header";
 import "./Home.css";
 import { withStyles } from "@material-ui/core/styles";
 import ImageList from "@material-ui/core/ImageList";
-import GridListTile from "@material-ui/core/GridListTile";
-import GridListTileBar from "@material-ui/core/GridListTileBar";
+import ImageListItem from "@material-ui/core/ImageListItem";
+import ImageListItemBar from "@material-ui/core/ImageListItemBar";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import FormControl from "@material-ui/core/FormControl";
@@ -22,6 +22,15 @@ const styles = (theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
+  },
+  upcomingMoviesGrid: {
+    flexWrap: "nowrap",
+    width: "100%",
+    transform: "translateZ(0)",
+  },
+  releasedMoviesGrid: {
+    transform: "translateZ(0)",
+    cursor: "pointer",
   },
   formControl: {
     margin: theme.spacing(1),
@@ -135,23 +144,31 @@ const Home = (props) => {
       <div className="upcoming-movies-heading">
         <span>Upcoming Movies</span>
       </div>
-      <ImageList rowHeight={250} cols={6}>
+      <ImageList
+        className={classes.upcomingMoviesGrid}
+        rowHeight={250}
+        cols={6}
+      >
         {UpcomingMovies.map((movie) => (
-          <GridListTile key={"um" + movie.id}>
+          <ImageListItem key={"um" + movie.id}>
             <img
               src={movie.poster_url}
               className="movie-poster"
               alt={movie.title}
             />
-            <GridListTileBar title={movie.title} />
-          </GridListTile>
+            <ImageListItemBar title={movie.title} />
+          </ImageListItem>
         ))}
       </ImageList>
       <div className="flex-container">
         <div className="left-half-homepage">
-          <ImageList rowHeight={350} cols={4}>
+          <ImageList
+            className={classes.releasedMoviesGrid}
+            rowHeight={350}
+            cols={4}
+          >
             {ReleasedMovies.map((movie) => (
-              <GridListTile
+              <ImageListItem
                 onClick={() => props.history.push("/movie/" + movie.id)}
                 className="released-movie-grid-item"
                 key={"grid" + movie.id}
@@ -161,7 +178,7 @@ const Home = (props) => {
                   className="movie-poster"
                   alt={movie.title}
                 />
-                <GridListTileBar
+                <ImageListItemBar
                   title={movie.title}
                   subtitle={
                     <span>
@@ -170,7 +187,7 @@ const Home = (props) => {
                     </span>
                   }
                 />
-              </GridListTile>
+              </ImageListItem>
             ))}
           </ImageList>
         </div>
